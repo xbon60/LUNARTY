@@ -1,5 +1,6 @@
 import iwlist
-content = iwlist.scan(interface='wlx0014d1a6e966')
+from config import withoutmonitor
+content = iwlist.scan(interface=withoutmonitor)
 cells = iwlist.parse(content)
 
 # Affichage des informations pour chaque réseau

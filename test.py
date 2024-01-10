@@ -1,34 +1,39 @@
-import iwlist
-content = iwlist.scan(interface='wlx0014d1a6e966')
-cells = iwlist.parse(content)
+import argparse
+import subprocess
+from config import withoutmonitor
 
-def display_wifi_list_and_wifi_choice(cells):
-    # Affichage des informations pour chaque réseau avec un numéro associé
-    for i, cell in enumerate(cells, 1):
-        mac_address = cell['mac']
-        channel = cell['channel']
-        essid = cell['essid']
-        encryption = cell['encryption']
+def check_interface_existence(interface):
+    try:
+        # Vérifie si l'interface existe en exécutant airmon-ng
+        subprocess.run(["airmon-ng", "check", "kill"])
+        subprocess.run(["airmon-ng", "start", interface], check=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
-        print(f"{i}. ESSID: {essid}, MAC Address: {mac_address}, Channel: {channel}, Security: {encryption}")
-
-    # Demande à l'utilisateur de choisir un réseau
-    selected_index = int(input("Choisissez le numéro du réseau que vous souhaitez sélectionner: ")) - 1
-
-    # Vérifie que l'index sélectionné est valide
-    if 0 <= selected_index < len(cells):
-        selected_cell = cells[selected_index]
-
-        # Stocke les valeurs du réseau sélectionné dans des variables
-        machinal = selected_cell['mac']
-        essaifinal = selected_cell['essid']
-        encryptionfinal = selected_cell['encryption']
-        channel_final = selected_cell['channel']
-
-        # Utilise les valeurs sélectionnées comme nécessaire dans le reste du code
-        print(f"Vous avez sélectionné le réseau :\nESSID: {essaifinal}\nMAC Address: {machinal}\nChannel: {channel_final}\nSecurity: {encryptionfinal}")
-        
-        # Ajoute ici le reste du code que vous souhaitez exécuter avec les valeurs sélectionnées
+def activate_monitor():
+    if check_interface_existence(withoutmonitor):
+        main()
     else:
-        print("Index non valide. Veuillez sélectionner un numéro de réseau valide.")
+        print(f"Interface {withoutmonitor} n'existe pas. Vérifiez votre configuration.")
+        main()
+    
+def main():
+    parser = argparse.ArgumentParser(description='PTT2000 PROJECT V0.')
+
+    # Ajoutez vos options ici
+    parser.add_argument('-a', action='store_true', help='Scan Reseaux Wifi')
+    parser.add_argument('-b', action='store_true', help='Utilitaire Aircrack-ng')
+    # parser.add_argument('-b', type=str, help='Option B')
+
+    args = parser.parse_args()
+
+    if args.a:
+        subprocess.run(["python3", "aircrackdump-ng.py"])
+
+    if args.b:
+        subprocess.run(["python3", "aircrack-ng.py"])
+
+if __name__ == "__main__":
+    activate_monitor()
 

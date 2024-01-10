@@ -1,5 +1,8 @@
 import subprocess
 import iwlist
+from config import card
+from config import withoutmonitor
+
 
 def scan_wifi_networks(interface):
     # Exécute la commande iwlist pour scanner les réseaux WiFi
@@ -7,9 +10,9 @@ def scan_wifi_networks(interface):
     cells = iwlist.parse(content)
     return cells
 
-def display_wifi_list_and_wifi_choice():
+def display_wifi_list_and_wifi_choice(withoutmonitor):
     # Scanne les réseaux WiFi
-    interface = 'wlx0014d1a6e966'
+    interface = withoutmonitor
     wifi_networks = scan_wifi_networks(interface)
 
     # Affichage des informations pour chaque réseau avec un numéro associé
@@ -50,17 +53,20 @@ def execute_aircrack(selected_cell, worldlist_path='worldlist.txt', capture_file
     aircrack_command = ['aircrack-ng', '-w', worldlist_path, '-b', bssid, capture_file]
 
     try:
-        # Exécute la commande Aircrack-ng en tant que processus externe
-        result = subprocess.run(aircrack_command, capture_output=True, text=True, check=True)
-
+        # Exécute la commande Aircrack-ng en tant que processus externe et activation du mode moniteur
+        result = subprocess.run(["sudo", "python3", "monitor.py", "-a"], check=True)
+        # result = subprocess.run(aircrack_command, capture_output=True, text=True, check=True) TEMPORAIRE EN ATTENDANT UNE CONFIGURATION 
+        print("Commande Aircack Dans le Futur")
+        result = subprocess.run(["sudo", "python3", "monitor.py", "-d"], check=True)
         # Affiche la sortie de la commande
-        print(result.stdout)
+        #print(result.stdout)
 
     except subprocess.CalledProcessError as e:
         # Gère les erreurs lors de l'exécution de la commande
         print(f"Erreur lors de l'exécution de la commande Aircrack-ng : {e.stderr}")
 
+
 if __name__ == "__main__":
     # Appelle la fonction pour afficher la liste des réseaux et demander à l'utilisateur de choisir
-    display_wifi_list_and_wifi_choice()
+    display_wifi_list_and_wifi_choice(withoutmonitor)
 
