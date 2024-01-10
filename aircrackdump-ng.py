@@ -1,9 +1,14 @@
-import subprocess
+import iwlist
+content = iwlist.scan(interface='wlx0014d1a6e966')
+cells = iwlist.parse(content)
 
-def run_airdump():
-    # Exécuter airodump-ng et générer le fichier CSV
-    subprocess.run(["airodump-ng", "--output-format", "csv", "-w", "wifilist", "wlan0"])
+# Affichage des informations pour chaque réseau
+for cell in cells:
+    mac_address = cell['mac']
+    channel = cell['channel']
+    essid = cell['essid']
+    encryption = cell['encryption']
 
-if __name__ == "__main__":
-    run_airdump()
+    print(f"ESSID: {essid}\nMAC Address: {mac_address}\nChannel: {channel}\nSecurity: {encryption}\n")
 
+#channel, MAC ADDRESS NETWORK, BSSID, SSID, ENCYRPTION
