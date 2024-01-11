@@ -3,6 +3,7 @@ import subprocess
 import time 
 from monitor import monitor_mode
 from monitor import desactivate_monitor
+from monitor import check_interface_existence
 from config import withoutmonitor
 from config import card
 
@@ -24,8 +25,12 @@ def main():
     	subprocess.run(["python3", "aircrack-ng.py"])
 
 if __name__ == "__main__":
-    if monitor_mode(withoutmonitor):
-        pass
-    else:
-        desactivate_monitor(withoutmonitor)
+    if check_interface_existence(withoutmonitor, card):
+        if monitor_mode(withoutmonitor):
+            pass
+        else:
+            desactivate_monitor(withoutmonitor)
+    else : 
+        print("erreur carte Reseaux")
+        exit()
     main()

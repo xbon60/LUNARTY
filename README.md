@@ -5,3 +5,4 @@ aircrack-ng
 
 Python Libs
 Psutil
+pandas

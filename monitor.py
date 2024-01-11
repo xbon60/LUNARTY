@@ -12,7 +12,6 @@ def main(withoutmonitor, card):
     # Ajoutez vos options ici
     parser.add_argument('-a', action='store_true', help='Activé Mode Moniteur')
     parser.add_argument('-d', action='store_true', help='Desactivé Mode Moniteur')
-    parser.add_argument('-v', action='store_true', help='Verifier ETAT Mode Moniteur')
     
     args = parser.parse_args()
 
@@ -22,9 +21,6 @@ def main(withoutmonitor, card):
     if args.d:
         desactivate_monitor(withoutmonitor)
         
-    if args.v:
-        verification_monitor_mode(withoutmonitor)
-
 
 def check_interface_existence(withoutmonitor, card):
     # Obtient la liste des interfaces réseau
@@ -65,12 +61,6 @@ def desactivate_monitor(withoutmonitor):
         result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         print('Mode Moniteur Désactivé')
         
-
-def verification_monitor_mode(withoutmonitor):
-    if monitor_mode(withoutmonitor):
-        print('True')
-    else:
-        print('False')
         
 
 if __name__ == "__main__":
