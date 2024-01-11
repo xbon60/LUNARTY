@@ -12,4 +12,3 @@ for cell in cells:
 
     print(f"ESSID: {essid}\nMAC Address: {mac_address}\nChannel: {channel}\nSecurity: {encryption}\n")
 
-#channel, MAC ADDRESS NETWORK, BSSID, SSID, ENCYRPTION
