@@ -1,11 +1,46 @@
 import subprocess
 import iwlist
-from config import withoutmonitor
-from config import card
 import psutil
 import argparse
-def check_interface_existence(withoutmonitor):
+from config import withoutmonitor
+from config import card
+
+
+def main(withoutmonitor, card):
+    parser = argparse.ArgumentParser(description='PTT2000 PROJECT V0.')
+
+    # Ajoutez vos options ici
+    parser.add_argument('-a', action='store_true', help='Activé Mode Moniteur')
+    parser.add_argument('-d', action='store_true', help='Desactivé Mode Moniteur')
+    parser.add_argument('-v', action='store_true', help='Verifier ETAT Mode Moniteur')
+    
+    args = parser.parse_args()
+
+    if args.a:
+        activate_monitor(withoutmonitor)
+
+    if args.d:
+        desactivate_monitor(withoutmonitor)
+        
+    if args.v:
+        verification_monitor_mode(withoutmonitor)
+
+
+def check_interface_existence(withoutmonitor, card):
     # Obtient la liste des interfaces réseau
+    network_interfaces = psutil.net_if_addrs()
+
+    # Vérifie si l'interface withoutmonitor existe dans la liste
+    if withoutmonitor not in network_interfaces:
+    # Vérifie si l'interface card existe dans la liste
+        if card not in network_interfaces:
+            return False
+
+    return True
+    
+
+def monitor_mode(withoutmonitor):
+     # Obtient la liste des interfaces réseau
     network_interfaces = psutil.net_if_addrs()
 
     # Vérifie si l'interface spécifiée existe dans la liste
@@ -13,55 +48,34 @@ def check_interface_existence(withoutmonitor):
         return True
     else:
         return False
-        
 
-def main(withoutmonitor, card):
 
-    parser = argparse.ArgumentParser(description='PTT2000 PROJECT V0.')
-
-    # Ajoutez vos options ici
-    parser.add_argument('-a', action='store_true', help='Activé Mode Moniteur')
-    parser.add_argument('-d', action='store_true', help='Desactivé Mode Moniteur')
-    parser.add_argument('-v', action='store_true', help='Verifier ETAT Mode Moniteur')
-    args = parser.parse_args()
-
-    if args.a:
-        activate_monitor(withoutmonitor)
-
-    if args.d:
-    	desactivate_monitor(card)
-    if args.v:
-        verification_monitor_mode()
-    	
 def activate_monitor(withoutmonitor):
-    if check_interface_existence(withoutmonitor):
-        monitor = False
+    if monitor_mode(withoutmonitor):
         result = subprocess.run(["sudo", "airmon-ng", "start", withoutmonitor], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        #print(result.stdout) 
         print('Mode Moniteur Actif')
     else:
-        monitor = True
-        print('Mode Moniteur Actif')
-
-
-def desactivate_monitor(card):
-    if check_interface_existence(withoutmonitor):
-        monitor = False
-        print('Mode Moniteur Desactivé')
-    else:
-        monitor = True
-        result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        #print(result.stdout) 
-        print('Mode Moniteur Desactivé')
+        print('Mode Moniteur Deja Actif')
         
-def verification_monitor_mode():
-    if check_interface_existence(withoutmonitor):
-        monitor = False
+
+def desactivate_monitor(withoutmonitor):
+    if monitor_mode(withoutmonitor):
+        print('Mode Moniteur Deja Desactivé')
+    else:
+        result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        print('Mode Moniteur Désactivé')
+        
+
+def verification_monitor_mode(withoutmonitor):
+    if monitor_mode(withoutmonitor):
         print('True')
     else:
-        monitor = True
         print('False')
         
+
 if __name__ == "__main__":
-    main(withoutmonitor,card)
+    if check_interface_existence(withoutmonitor, card):
+        main(withoutmonitor, card)
+    else : 
+        print("erreur carte Reseaux")
 

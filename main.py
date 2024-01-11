@@ -1,7 +1,8 @@
 import argparse
 import subprocess
 import time 
-from monitor import check_interface_existence
+from monitor import monitor_mode
+from monitor import desactivate_monitor
 from config import withoutmonitor
 from config import card
 
@@ -23,14 +24,8 @@ def main():
     	subprocess.run(["python3", "aircrack-ng.py"])
 
 if __name__ == "__main__":
-    if check_interface_existence(withoutmonitor):
-        monitor = False
+    if monitor_mode(withoutmonitor):
+        pass
     else:
-        monitor = True
-        result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        time.sleep(5)
-        print('Mode Moniteur Desactivé')
-        
-    
-    subprocess.run(["sudo", "python3", "monitor.py", "-d"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        desactivate_monitor(withoutmonitor)
     main()
