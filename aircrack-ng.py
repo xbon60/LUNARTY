@@ -6,7 +6,8 @@ import glob
 from config import card
 from config import withoutmonitor
 from monitor import activate_monitor
-#from findmac import extract_station_mac
+import pandas as pd
+
 
 
 
@@ -54,21 +55,55 @@ def display_wifi_list_and_wifi_choice(withoutmonitor):
 
 def find_client_mac(bssid, channel, card):
     try:
-        #Supprime le contenu de airdumpfile
+        # Supprime le contenu de airdumpfile
         for filename in os.listdir('airdumpfile/'):
             if os.path.isfile(os.path.join('airdumpfile/', filename)):
                 os.remove(os.path.join('airdumpfile/', filename))
-        # Exécute la commande airodump-ng pour afficher les informations sur les clients
-        airodump_command = ['sudo','airodump-ng', '-w', 'airdumpfile/airdump', '--bssid', bssid, '--channel', str(channel), card]
-        result = subprocess.Popen(airodump_command, shell = True)
-        time.sleep(10)
-        subprocess.Popen.kill(result)
-      
+
+        # Ouvre un fichier vide pour rediriger la sortie
+        with open(os.devnull, 'w') as devnull:
+            # Exécute la commande airodump-ng pour afficher les informations sur les clients
+            airodump_command = ['sudo', 'airodump-ng', '-w', 'airdumpfile/airdump', '--bssid', bssid, '--channel', str(channel), card]
+
+            # Utilisation de Popen pour exécuter la commande en arrière-plan
+            process = subprocess.Popen(airodump_command, stdout=devnull, stderr=devnull, text=True)
+
+            # Attendez quelques secondes pour que la capture ait lieu
+            time.sleep(10)
+
+            # Tuez le processus
+            process.kill()
+            
+            # Charge le fichier CSV en tant que dataframe pandas
+            csv_file = "airdumpfile/airdump-01.csv"
+            df = pd.read_csv(csv_file, skiprows=4)  # Ignorer les 4 premières lignes du fichier
+
+       	    # Assurez-vous que les noms de colonnes utilisés correspondent exactement aux noms réels
+            relevant_columns = ['Station MAC', ' BSSID']  # Ajoutez l'espace au début de ' BSSID'
+
+            # Sélectionne uniquement les colonnes pertinentes
+            df = df[relevant_columns]
+
+            # Retirer les espaces au début des adresses MAC
+            df[' BSSID'] = df[' BSSID'].str.strip()
+
+            # Filtre les lignes pour le BSSID spécifié
+            filtered_rows = df[df[' BSSID'] == bssid]
+
+            if not filtered_rows.empty:
+                # Récupère l'adresse MAC de la station associée au BSSID spécifié
+                station_mac = filtered_rows.iloc[0]['Station MAC']
+                return station_mac
+            else:
+                print(f"Aucune station MAC trouvée pour le BSSID {bssid}")
+                return None
+
     except subprocess.CalledProcessError as e:
         print(f"Erreur lors de la recherche de l'adresse MAC du client : {e.stderr}")
 
     return None
-
+    
+    
 def execute_aircrack(selected_cell, channel_final, worldlist_path='worldlist.txt', capture_file='cap.cap'):
     # Récupère les informations nécessaires du réseau sélectionné
     bssid = selected_cell['mac']
