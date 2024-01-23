@@ -1,7 +1,9 @@
 
 BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
-66:4E:17:0E:A8:8C, 2024-01-12 00:43:19, 2024-01-12 00:43:28,  1, 360, WPA2, CCMP, PSK, -36,       81,        1,   0.  0.  0.  0,  20, Redmi Note 12 Pro 5G, 
+C8:D3:A3:1F:68:A0, 2024-01-16 16:51:39, 2024-01-16 16:51:43,  6, 130, WPA2, CCMP TKIP, PSK, -84,       44,       65,   0.  0.  0.  0,  10, wifi-sentr, 
 
 Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
-FC:E2:6C:19:38:C0, 2024-01-12 00:43:20, 2024-01-12 00:43:28, -22,       18, 66:4E:17:0E:A8:8C,
+F0:03:8C:B8:BC:F7, 2024-01-16 16:51:40, 2024-01-16 16:51:42, -66,        2, C8:D3:A3:1F:68:A0,
+F0:03:8C:B8:BC:F5, 2024-01-16 16:51:41, 2024-01-16 16:51:42, -65,        2, C8:D3:A3:1F:68:A0,
+0E:DB:26:16:3B:71, 2024-01-16 16:51:42, 2024-01-16 16:51:42, -72,        1, C8:D3:A3:1F:68:A0,
 

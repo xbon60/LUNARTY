@@ -93,6 +93,8 @@ def find_client_mac(bssid, channel, card):
             if not filtered_rows.empty:
                 # Récupère l'adresse MAC de la station associée au BSSID spécifié
                 station_mac = filtered_rows.iloc[0]['Station MAC']
+                print(station_mac)
+                time.sleep(2)
                 return station_mac
             else:
                 print(f"Aucune station MAC trouvée pour le BSSID {bssid}")

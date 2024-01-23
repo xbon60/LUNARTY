@@ -1,2 +1,2 @@
 card = 'wlan0mon'
-withoutmonitor = 'wlx0014d1a6e966'
+withoutmonitor = 'wlx00c0cab26d2c'
