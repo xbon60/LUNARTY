@@ -19,3 +19,4 @@ function desactiver_moniteur(displaymoniteur) {
     let buttonaffichage = "Mode Moniteur INACTIF";
     displaymoniteur.textContent = buttonaffichage;
 }
+
