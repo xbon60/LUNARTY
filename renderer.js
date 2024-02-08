@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const displaymoniteur = document.getElementById('displaymoniteur');
     const buttonactivermoniteur = document.getElementById('activermoniteur');
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttondesactivermoniteur = document.getElementById('desactivermoniteur');
     buttondesactivermoniteur.addEventListener('click', () => {
         desactiver_moniteur(displaymoniteur);
+        
     });
 });
 
@@ -19,4 +21,6 @@ function desactiver_moniteur(displaymoniteur) {
     let buttonaffichage = "Mode Moniteur INACTIF";
     displaymoniteur.textContent = buttonaffichage;
 }
+
+
 

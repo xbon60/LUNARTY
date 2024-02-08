@@ -11,8 +11,17 @@
   "devDependencies": {
     "electron": "^28.2.2"
   },
-  "description": "",
+  "description": "Required Programs  aircrack-ng",
   "dependencies": {
+    "node-wifi": "^2.0.16",
     "python-shell": "^5.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xbon60/PTT2000.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xbon60/PTT2000/issues"
+  },
+  "homepage": "https://github.com/xbon60/PTT2000#readme"
 }
