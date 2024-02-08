@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 
-
 let mainWindow;
 
 const createWindow = () => {
@@ -28,14 +27,3 @@ app.whenReady().then(() => {
   });
 })
 
-function activer_moniteur() {
-  const displaymoniteur = mainWindow.webContents;
-  let buttonaffichage = "a";
-  displaymoniteur.executeJavaScript(`document.getElementById('displaymoniteur').textContent += '${buttonaffichage}'`);
-}
-
-function desactiver_moniteur() {
-  const displaymoniteur = mainWindow.webContents;
-  let buttonaffichage = "b";
-  displaymoniteur.executeJavaScript(`document.getElementById('displaymoniteur').textContent += '${buttonaffichage}'`);
-}
