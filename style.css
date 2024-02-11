@@ -1,81 +1,101 @@
+/*Fond*/
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #19005c, #13005e, rgb(67, 1, 134));
-    background-size: 200% auto;
-    animation: gradient 30s ease infinite;
-  }
-
-  .navbar {
-    overflow: hidden;
-    background-color: rgb(0, 0, 0);
-    border-right:5px solid gray;
-    width: 80px;
-    height: 100vh;
-    position: absolute;
-  }
-
-  .navbar a {
-    list-style-type: none;
-    display: block;
-    color: white;
-    text-align: left;
-    padding: 14px 20px;
-    text-decoration: none;
-    border: none;
-    width: 80px;
-  }
-
-  .navbar a:hover {
-    background-color: rgba(255, 255, 255, 0.6);
-    color: black;
-    transition: 0.2s ease-in-out;
-    scale: 1.1;
-  }
-
-  .navbar a.active {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #000000;
-  }
-
-  .image-cercle {
-    width: 100px; /* ajuster la taille du logo selon vos besoins */
-    height: 100px; /* ajuster la taille du logo selon vos besoins */
-    border-radius: 50%; /* pour faire un cercle */
-    background-color: rgb(0, 0, 0); /* couleur de fond */
-    overflow: hidden;
-    border: 5px solid #a3a3a3;
-    display: inline;
-  }
-
-  .center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .logo {
-    text-align: center;
-    padding: 5px;
-  }
-  
-  .logo img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 4px solid #525252;
-  }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
+  background: #23272a ;
+  overflow: hidden; /* Empêche le défilement de la page */
+  margin: 0; /* Réinitialise les marges par défaut du corps du document */
+}
+/*class utils*/
+.centern {
+  display: flex;
+  justify-content: center;
+  width: 75px;
+}
+/*conteneur de la barre de navigation*/
+.cnav {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  margin-left: 15px;
+  position: absolute;
+}
+/*Barre de navigation*/
+.nav {
+  background-color: #2c2f33 ;
+  width: 75px;
+  height: 90vh;
+  border-radius: 15px;
+}
+/*logo de la barre de navigation*/
+.logo{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%; /* Crée un cercle */
+  margin: 5px;
+  margin-top: 15px;
+  border: 2.5px solid #b9bbbe ;
+}
+/*menu de la barre de navigation*/
+.menu {
+  color: #ffffff;
+  background-color:#2c2f33 ;
+  border: 0;
+}
+/*element du menu*/
+.elem {
+  width: 60px;
+  height: 60px;
+  margin: 7.5px;
+  font-size: 35px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+/*partie déroulante du menu*/
+.deroulant a {
+  display: none;
+  width: 60px;
+  height: 35px;
+  font-size: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  margin: 7.5px;
+  justify-content: center;
+}
+/*partie apparition des icon du menu*/
+.menu:hover .deroulant a {
+  display: flex;
+}
+/*end menu*/
+/*Home de la barre de navigation*/
+.home {
+  width: 30px;
+  height: 30px;
+  margin: 12.5px;
+  display: flex;
+  justify-content: center;
+}
+/*Page*/
+.page{
+  position: absolute;
+}
+/*Titre*/
+.titre {
+  margin: 0;
+  display: flex;
+  color: #ffffff;
+  justify-content: center;
+  position: absolute;
+  left: 30vw;
+  right: 30vw;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+/*text*/
+.text {
+  color: #ffffff;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  margin-top: 80px;
+  margin-left: 120px;
+  margin-right: 25px;
+}
