@@ -1,25 +1,27 @@
+const remote = require('electron').remote;
+const ipc = require('electron').ipcRenderer;
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
-    const displaymoniteur = document.getElementById('displaymoniteur');
-    const buttonactivermoniteur = document.getElementById('activermoniteur');
-    buttonactivermoniteur.addEventListener('click', () => {
-        activer_moniteur(displaymoniteur);
+    const homebutton = document.getElementById('home');
+    homebutton.addEventListener('click', () => {
+        ipc.send('home');
+        home();
     });
-    const buttondesactivermoniteur = document.getElementById('desactivermoniteur');
+    const buttondesactivermoniteur = document.getElementById('test');
     buttondesactivermoniteur.addEventListener('click', () => {
-        desactiver_moniteur(displaymoniteur);
+        test();
         
     });
 });
 
-function activer_moniteur(displaymoniteur) {
-    let buttonaffichage = "Mode Moniteur ACTIF";
-    displaymoniteur.textContent = buttonaffichage;
+function home() {
+    remote.dialog.showErrorBox('Erreur !', 'L\'application a rencontré une erreur. Votre ordinateur va s\'auto-détruire dans 10 secondes.');
 }
 
-function desactiver_moniteur(displaymoniteur) {
-    let buttonaffichage = "Mode Moniteur INACTIF";
-    displaymoniteur.textContent = buttonaffichage;
+function test() {
+    remote.dialog.showErrorBox('Erreur !', 'L\'application a rencontré une erreur. Votre ordinateur va s\'auto-détruire dans 10 secondes.');
 }
 
 

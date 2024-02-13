@@ -1,29 +1,35 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
 
 let mainWindow;
 
-const createWindow = () => {
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    frame: false,
-    webPreferences: {
-      nodeIntegration: true
-    }
-  })
+function createWindow () {
 
-  mainWindow.loadFile('index.html')
+  mainWindow = new BrowserWindow({width: 1800, height: 1200});
+
+  mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  })
 }
 
-app.whenReady().then(() => {
-  createWindow()
-  
-  ipcMain.on('activer-moniteur', () => {
-    activer_moniteur();
-  });
+app.on('ready', createWindow);
 
-  ipcMain.on('desactiver-moniteur', () => {
-    desactiver_moniteur();
-  });
-})
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
 
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
+
+ipc.on('log-error', () => {
+  console.log('Erreur ! Veuillez rapporter ce bug au développeur de l\'application.');
+});
