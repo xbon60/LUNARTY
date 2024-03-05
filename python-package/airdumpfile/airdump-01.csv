@@ -1,11 +1,6 @@
 
 BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
-C8:D3:A3:1F:68:A0, 2024-01-23 16:50:26, 2024-01-23 16:50:35,  6, 130, WPA2, CCMP TKIP, PSK, -76,       85,     2432,   0.  0.  0.  0,  10, wifi-sentr, 
+C0:FF:D4:D2:1F:C3, 2024-02-21 17:14:37, 2024-02-21 17:14:40,  1, 130, WPA2, CCMP, PSK, -87,        4,        0,   0.  0.  0.  0,  12, StJo-Invites, 
 
 Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
-10:6F:D9:9C:A7:FD, 2024-01-23 16:50:27, 2024-01-23 16:50:35, -65,       91, C8:D3:A3:1F:68:A0,
-6A:E6:9C:63:1C:36, 2024-01-23 16:50:27, 2024-01-23 16:50:30, -67,       29, C8:D3:A3:1F:68:A0,
-74:4C:A1:80:83:29, 2024-01-23 16:50:26, 2024-01-23 16:50:35, -62,     2225, C8:D3:A3:1F:68:A0,
-A4:CF:99:97:C2:F7, 2024-01-23 16:50:27, 2024-01-23 16:50:35, -60,      184, C8:D3:A3:1F:68:A0,
-46:87:BD:8B:D6:03, 2024-01-23 16:50:27, 2024-01-23 16:50:27,  -1,        8, C8:D3:A3:1F:68:A0,
 

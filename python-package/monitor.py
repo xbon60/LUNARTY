@@ -47,19 +47,30 @@ def monitor_mode(withoutmonitor):
 
 
 def activate_monitor(withoutmonitor):
-    if monitor_mode(withoutmonitor):
-        result = subprocess.run(["sudo", "airmon-ng", "start", withoutmonitor], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        print('Mode Moniteur Actif')
-    else:
-        print('Mode Moniteur Deja Actif')
-        
+    if check_interface_existence(withoutmonitor, card):
+        if monitor_mode(withoutmonitor):
+            result = subprocess.run(["sudo", "airmon-ng", "start", withoutmonitor], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            print('Mode Moniteur Actif')
+            return ("Actif")
+        else:
+            print('Mode Moniteur Deja Actif')
+            return("Actif")
+    else: 
+        print("erreur Carte Reseau")
+        return("erreur")
 
 def desactivate_monitor(withoutmonitor):
-    if monitor_mode(withoutmonitor):
-        print('Mode Moniteur Deja Desactivé')
+    if check_interface_existence(withoutmonitor, card):
+        if monitor_mode(withoutmonitor):
+            print('Mode Moniteur Deja Desactivé')
+            return("Desactivé")
+        else:
+            result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            print('Mode Moniteur Désactivé')
+            return("Desactivé")
     else:
-        result = subprocess.run(["sudo", "airmon-ng", "stop", card], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        print('Mode Moniteur Désactivé')
+        print("Erreur Carte Reseau")
+        return("erreur")
         
         
 

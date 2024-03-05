@@ -19,10 +19,10 @@ def main():
     args = parser.parse_args()
 
     if args.a:
-        subprocess.run(["python3", "aircrackdump-ng.py"])
+        subprocess.run(["python3", "aircrackdump.py"])
 
     if args.b:
-    	subprocess.run(["python3", "aircrack-ng.py"])
+    	subprocess.run(["python3", "aircrack.py"])
 
 if __name__ == "__main__":
     if check_interface_existence(withoutmonitor, card):
