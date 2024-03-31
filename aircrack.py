@@ -14,7 +14,7 @@ import pandas as pd
 
 def scan_wifi_networks(interface):
     # Exécute la commande iwlist pour scanner les réseaux WiFi
-    content = iwlist.scan(interface=interface)
+    content = iwlist.scan(interface)
     cells = iwlist.parse(content)
     return cells
 

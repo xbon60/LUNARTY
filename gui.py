@@ -1,7 +1,7 @@
 from customtkinter import *
 from monitor import *
 from aircrack import *
-from aircrackdump import *
+from scanwifi import dumpwifi
 from config import * 
 custom_font = ("Arial", 10)
 validationKeyBoardValue = []
@@ -27,7 +27,7 @@ def boutonoption1():
     resetMainLabel()
     MainLabel.pack(side=LEFT, fill=Y, ipady=0, padx=0,pady=10)
     #scrollbar.configure(command=MainLabel.yview)
-    result = dumpnetwork()
+    result = dumpwifi()
     MainLabel.configure(state='normal')
     MainLabel.delete("1.0", END)  # Supprime tout le contenu actuel
     MainLabel.insert(END, result)  # Insère le nouveau texte à la fin
@@ -128,8 +128,7 @@ option2.pack(side=TOP, ipady=0, padx=10,pady=10)
 #Zone Principale
 
 main_group = CTkFrame(fenetre)
-#scrollbar = CTkScrollbar(main_group, orient=VERTICAL)
-#scrollbar.pack(side=RIGHT, fill=Y)
+scrollbar = CTkScrollableFrame(main_group, width=200, height=200)
 main_group.pack(side=RIGHT, fill=Y, ipady=0, padx=0,pady=10)
 main_group.pack_propagate(400)
 MainLabel = CTkTextbox(main_group)

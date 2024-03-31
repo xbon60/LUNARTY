@@ -19,7 +19,7 @@ wpa2Re = re.compile(r"IE:\ IEEE\ 802\.11i/WPA2\ Version\ 1$")
 # Runs the comnmand to scan the list of networks.
 # Must run as super user.
 # Does not specify a particular device, so will scan all network devices.
-def scan(interface='wlan0'):
+def scan(interface):
     cmd = ["iwlist", interface, "scan"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     points = proc.stdout.read().decode('utf-8')
