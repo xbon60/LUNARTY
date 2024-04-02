@@ -2,10 +2,10 @@ import subprocess
 import iwlist
 import time
 import os
-import glob
 from config import card
 from config import withoutmonitor
-from monitor import activate_monitor
+from monitor import *
+from colorama import Fore, Style
 
 import pandas as pd
 
@@ -18,21 +18,32 @@ def scan_wifi_networks(interface):
     cells = iwlist.parse(content)
     return cells
 
+import logging
+
 def display_wifi_list_and_wifi_choice(withoutmonitor):
+    show_networks_without_essid=False
     # Scanne les réseaux WiFi
     interface = withoutmonitor
     wifi_networks = scan_wifi_networks(interface)
-    value=[""]
+ 
+    value = [""]
 
     # Affichage des informations pour chaque réseau avec un numéro associé
     for i, cell in enumerate(wifi_networks, 1):
-        mac_address = cell['mac']
-        channel = cell['channel']
-        essid = cell['essid']
-        encryption = cell['encryption']
-        value.append(f"{i}. ESSID: {essid}\n, MAC Address: {mac_address}\n, Channel: {channel}\n, Security: {encryption}\n\n")
-        #print(f"{i}. ESSID: {essid}, MAC Address: {mac_address}, Channel: {channel}, Security: {encryption}")
-    return(value, wifi_networks)
+        mac_address = cell.get('mac', 'N/A')
+        channel = cell.get('channel', 'N/A')
+        essid = cell.get('essid', 'N/A')
+        encryption = cell.get('encryption', 'N/A')
+        frequency = cell.get('frequency', 'N/A')
+        if 'channel' not in cell:
+            logging.error(f"{Fore.RED}KeyError: 'channel' not found in cell: {cell}{Style.RESET_ALL}")
+        
+        if not essid and not show_networks_without_essid:
+            continue
+
+        value.append(f"{i}. ESSID: {essid}\n MAC Address: {mac_address}\nFrequency: {frequency}\n Channel: {channel}\n Security: {encryption}\n\n")
+
+    return value, wifi_networks
 
 def attacknetwork(wifi_networks, selected_index):
     # Vérifie que l'index sélectionné est valide
@@ -139,10 +150,6 @@ def execute_aircrack(selected_cell, channel_final, worldlist_path='worldlist.txt
 
     finally:
         # Désactive le mode moniteur
-        subprocess.run(["sudo", "python3", "monitor.py", "-d"], check=True)
+        desactivate_monitor(withoutmonitor)
 
-
-if __name__ == "__main__":
-    # Appelle la fonction pour afficher la liste des réseaux et demander à l'utilisateur de choisir
-    display_wifi_list_and_wifi_choice(withoutmonitor)
 

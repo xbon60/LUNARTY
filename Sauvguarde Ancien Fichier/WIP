@@ -1,0 +1,147 @@
+#Zone Clavier Numérique
+
+clavier_group = Frame(fenetre, bg="#777777")
+#clavier_group.pack(side=LEFT, padx=10,pady=10)
+clavier = Button(clavier_group, text="1", width=13, height=1,font=custom_font, command= lambda: clavierlogic(1))
+clavier.grid(row=1,column=1)
+clavier = Button(clavier_group, text="2", width=13, height=1,font=custom_font, command= lambda: clavierlogic(2))
+clavier.grid(row=1,column=2)
+clavier = Button(clavier_group, text="3", width=13, height=1,font=custom_font, command= lambda: clavierlogic(3))
+clavier.grid(row=2,column=1)
+clavier = Button(clavier_group, text="4", width=13, height=1,font=custom_font, command= lambda: clavierlogic(4))
+clavier.grid(row=2,column=2)
+clavier = Button(clavier_group, text="5", width=13, height=1,font=custom_font, command= lambda: clavierlogic(5))
+clavier.grid(row=3,column=1)
+clavier = Button(clavier_group, text="6", width=13, height=1,font=custom_font, command= lambda: clavierlogic(6))
+clavier.grid(row=3,column=2)
+clavier = Button(clavier_group, text="7", width=13, height=1,font=custom_font, command= lambda: clavierlogic(7))
+clavier.grid(row=4,column=1)
+clavier = Button(clavier_group, text="8", width=13, height=1,font=custom_font, command= lambda: clavierlogic(8))
+clavier.grid(row=4,column=2)
+clavier = Button(clavier_group, text="9", width=13, height=1,font=custom_font, command= lambda: clavierlogic(9))
+clavier.grid(row=5,column=1)
+clavier = Button(clavier_group, text="0", width=13, height=1,font=custom_font, command= lambda: clavierlogic(10))
+clavier.grid(row=5,column=2)
+clavier = Button(clavier_group, text="Valider", width=13, height=1,font=custom_font, command= lambda: keyboardvalidation())
+clavier.grid(row=6,column=2)
+
+
+
+def scan_wifi():
+    networks = wifi.Cell.all(withoutmonitor)
+    print(networks)
+    #time.sleep(10)
+
+    wifi_list = []
+    for cell in networks:
+        mac_address = cell.address
+        channel = cell.channel
+        essid = cell.ssid
+        encryption = cell.encryption_type
+        frequency = cell.frequency
+        value = f"ESSID: {essid}\nMAC Address: {mac_address}\nChannel: {channel}\nFrequency: {frequency}\nSecurity: {encryption}\n\n"
+        wifi_list.append(value)
+
+    return wifi_list
+
+
+
+
+import pandas as pd
+
+def extract_station_mac(csv_file, selected_bssid):
+    # Charge le fichier CSV en tant que dataframe pandas
+    df = pd.read_csv(csv_file, skiprows=4)  # Ignorer les 4 premières lignes du fichier
+
+    # Assurez-vous que les noms de colonnes utilisés correspondent exactement aux noms réels
+    relevant_columns = ['Station MAC', ' BSSID']  # Ajoutez l'espace au début de ' BSSID'
+
+    # Sélectionne uniquement les colonnes pertinentes
+    df = df[relevant_columns]
+
+    # Retirer les espaces au début des adresses MAC
+    df[' BSSID'] = df[' BSSID'].str.strip()
+
+    # Filtre les lignes pour le BSSID spécifié
+    filtered_rows = df[df[' BSSID'] == selected_bssid]
+
+    if not filtered_rows.empty:
+        # Récupère l'adresse MAC de la station associée au BSSID spécifié
+        station_mac = filtered_rows.iloc[0]['Station MAC']
+        return station_mac
+    else:
+        print(f"Aucune station MAC trouvée pour le BSSID {selected_bssid}")
+        return None
+
+# Exemple d'utilisation
+csv_file_path = 'airdumpfile/airdump-01.csv'
+selected_bssid = '66:4E:17:0E:A8:8C'
+
+result = extract_station_mac(csv_file_path, selected_bssid)
+
+if result:
+    print(f"L'adresse de la station MAC associée au BSSID {selected_bssid} est : {result}")
+
+def display_wifi_list_and_wifi_choice(withoutmonitor):
+    # Scanne les réseaux WiFi
+    interface = withoutmonitor
+    wifi_networks = scan_wifi_networks(interface)
+    print(wifi_networks)
+    value=[""]
+
+    # Affichage des informations pour chaque réseau avec un numéro associé
+    for i, cell in enumerate(wifi_networks, 1):
+        mac_address = cell['mac']
+        channel = cell['channel']
+        essid = cell['essid']
+        encryption = cell['encryption']
+        value.append(f"{i}. ESSID: {essid}\n, MAC Address: {mac_address}\n, Channel: {channel}\n, Security: {encryption}\n\n")
+        #print(f"{i}. ESSID: {essid}, MAC Address: {mac_address}, Channel: {channel}, Security: {encryption}")
+    return(value, wifi_networks)
+
+
+
+def boutonoption1():
+    global MainLabel
+    resetMainLabel()
+    MainLabel.pack(side=LEFT, fill=Y, ipady=0, padx=0,pady=10)
+    result = dumpwifi()
+    MainLabel.configure(state='normal')
+    MainLabel.delete("1.0", END)  # Supprime tout le contenu actuel
+    MainLabel.insert(END, result)  # Insère le nouveau texte à la fin
+    MainLabel.configure(state='disabled')
+
+
+def create_buttons_from_list(wifi_values):
+    global main_group
+    global listbuttonnet
+    numberrecord = 0
+    print(wifi_values)
+    del wifi_values[0]
+    for value in wifi_values:
+        numberrecord = numberrecord+1
+        # Crée un bouton avec la valeur actuelle de la liste comme texte
+        print(numberrecord)
+        listbuttonnet = CTkButton(main_group, text=value, command=lambda val=value, num=numberrecord: functionwifilist(num-1))
+        listbuttonnet.pack()
+
+
+#Zone Options WIP 
+option_group = CTkFrame(fenetre)
+Labeloption = CTkLabel(monitor_group, text="Options Disponibles ")
+DELETE option1 = CTkButton(option_group, text="Scan Reseau Wifi", width=13, height=1,font=custom_font, command= lambda: boutonoption1())
+aircrackattackbutton = CTkButton(option_group, text="Attaque Reseau", width=13, height=1,font=custom_font, command= lambda: boutonoption2())
+option_group.pack(side=LEFT, fill=Y, padx=10,pady=10)
+DELETE option1.pack(side=TOP, ipady=0, padx=10,pady=10)
+aircrackattackbutton.pack(side=TOP, ipady=0, padx=10,pady=10)
+
+
+
+def boutonoption2():
+    resetMainLabel()
+    
+    global listnet
+    value, listnet=display_wifi_list_and_wifi_choice(withoutmonitor)
+
+    create_buttons_from_list(value)
+    
