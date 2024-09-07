@@ -1,0 +1,34 @@
+/* styles.css */
+#buttonContainer button {
+    background-color: #050e64;
+    border: none;
+    color: white;
+    padding: 5px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 150px;  /* Largeur fixe */
+    height: 50px;  /* Hauteur fixe */
+}
+
+#buttonContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 50px;
+    padding: 0px;
+  }
+
+#buttonContainer button:hover {
+    background-color: #08147a;
+}
+
+body {
+    background-color: black; /* Fond noir pour la page entière */
+    color: white; /* Texte en blanc pour le contraste avec le fond noir */
+    margin: 0; /* Supprime les marges par défaut du body */
+    font-family: Arial, sans-serif; /* Définit une police de base */
+  }
