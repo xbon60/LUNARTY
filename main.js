@@ -1,5 +1,5 @@
 // Import Des Dépendances
-const { app, BrowserWindow, ipcMain, BaseWindow, WebContentsView } = require('electron')
+const { app, BrowserWindow, ipcMain, BaseWindow, WebContentsView, globalShortcut, webContents } = require('electron')
 const path = require('node:path')
 const { exec } = require('child_process');
 const wifi = require('node-wifi');
@@ -18,6 +18,7 @@ ipcMain.on('configrequest', (event) => {
 // Variables Globales
 let boundsvalue = {}
 let actualyview = 'mainwiew';
+let mainWindow
 
 // Création de la fenêtre
 const createWindow = () => {
@@ -85,9 +86,18 @@ const createWindow = () => {
     }else {
         settingswiew.setBounds({ x: 0, y: 50, width: width, height: height - 50 });
     }}
+// Activer DevTools si le raccourci Ctrl+Shift+I est utilisé
+  globalShortcut.register('Control+Shift+I', () => {
+    if (mainwiew && mainwiew.webContents) {
+      mainwiew.webContents.toggleDevTools();
+    } else {
+      console.log("La vue principale n'est pas définie.");
+    }
+  });
 
    
  }
+
 
  // Gestion des événements IPC pour changer de vue
 ipcMain.on('show-view', (event, view) => {
@@ -117,7 +127,6 @@ ipcMain.on('setconfig', (event, newConfig) => {
     console.log('application de la jnouvelle configuration...');
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
     console.log('Configuration appliqué');
-
 });
 
 
@@ -153,7 +162,7 @@ ipcMain.on('aircrackattack', (event, command) => {
 });
 
 ipcMain.on('log-report', (event, report) => {
-    console.log('Rapport Provenant du renderer:\n\n', report);
+    console.log('\x1b[32m%s\x1b[0m', 'Rapport Provenant du renderer:\n\n', report);
 });
 
   

@@ -29,11 +29,11 @@ window.addEventListener('DOMContentLoaded', () => {
       
             if (network) {
                 // Loguer les informations du réseau trouvé
-                window.appapi.logreport(`Réseau selectioné : ${JSON.stringify(network, null, 2)}`);
+                window.appapi.logreport(`Réseau selectioné pour éxécuter la commande aircrack\n : ${JSON.stringify(network, null, 2)}`);
                 const command = `aireplay-ng --deauth 100 -a ${bssid} wlan0mon`;
                 window.materialapi.aircrackattack(command);
             } else {
-                console.log('Réseau non trouvé');
+                window.appapi.logreport(`Réseau non trouvé pour le BSSID: ${bssid}`);
             }
         }
     });
