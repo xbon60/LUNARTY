@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   window.refreshapi.configrequest((event, config) => {
         networkcard.value = config.networkcard;
+        apivalue.value = config.apiKey;
   });
 
 
@@ -21,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 const networkcard = document.getElementById('networkcardvalue');
+const apivalue = document.getElementById('apikeyvalue');
 
 const saveConfig = document.getElementById('saveConfig');
 

@@ -34,7 +34,7 @@ body {
   }
 
 .InputConfigEntry {
-  width: 150px;               /* Largeur de l'input */
+  width: 250px;               /* Largeur de l'input */
   padding: 5px;              /* Padding interne */
   font-size: 12px;            /* Taille de la police */
   border: 2px solid #ccc;     /* Bordure par défaut */

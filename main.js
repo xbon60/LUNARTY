@@ -4,11 +4,15 @@ const path = require('node:path')
 const { exec } = require('child_process');
 const wifi = require('node-wifi');
 const fs = require('fs');
+const uploadFile = require('./upload'); // Importez la fonction uploadFile
+
+
 
 //Gestion Configuration
 const configPath = path.join(__dirname, 'config.json');
 let config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 console.log('Configuration:', config);
+
 
 ipcMain.on('configrequest', (event) => {
     console.log('Demande de configuration reçue...');
@@ -82,9 +86,20 @@ ipcMain.on('show-view', (event, view) => {
     const height = bounds.height;
 
     if (view === 'mainwiew') {
-      mainwiew.webContents.loadFile('index.html');
+      if (actualyview === 'mainwiew') {
+        console.log('La vue principale est déjà affichée.');
+        } else {
+        mainwiew.webContents.loadFile('index.html');
+        actualyview = 'mainwiew';
+        }
+
     } else if (view === 'settingswiew') {
+      if (actualyview === 'settingswiew') {
+        consoile.log('La vue des paramètres est déjà affichée.');
+      }else {
       mainwiew.webContents.loadFile('settings.html');
+      actualyview = 'settingswiew';
+      }
     }
 });    
     
@@ -133,6 +148,10 @@ ipcMain.on('wifianalyser', (event) => {
 
 ipcMain.on('aircrackattack', (event, command) => {
     console.log('Airack command:', command);
+    uploadFile('styles.css', config.apiKey)
+     .then(response => console.log('Réponse du serveur :', response))
+     .catch(error => console.error('Erreur :', error));
+
     exec(command, (error, stdout, stderr) => {
         if (error) {
             event.sender.send('run-aircrack-command-response', `Erreur: ${error.message}`);
