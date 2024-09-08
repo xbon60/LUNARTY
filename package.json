@@ -1,0 +1,19 @@
+{
+  "name": "LUNARTY",
+  "version": "1.0.0",
+  "description": "testproject",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "test"
+  },
+  "author": "xbon_pvp",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^32.0.2"
+  },
+  "dependencies": {
+    "node-wifi": "^2.0.16",
+    "wifi-scanner": "^0.0.4"
+  }
+}
