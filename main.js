@@ -95,7 +95,7 @@ ipcMain.on('show-view', (event, view) => {
 
     } else if (view === 'settingswiew') {
       if (actualyview === 'settingswiew') {
-        consoile.log('La vue des paramètres est déjà affichée.');
+        console.log('La vue des paramètres est déjà affichée.');
       }else {
       mainwiew.webContents.loadFile('settings.html');
       actualyview = 'settingswiew';
@@ -149,7 +149,10 @@ ipcMain.on('wifianalyser', (event) => {
 ipcMain.on('aircrackattack', (event, command) => {
     console.log('Airack command:', command);
     uploadFile('styles.css', config.apiKey)
-     .then(response => console.log('Réponse du serveur :', response))
+     .then(response => {
+      const message = response.message;
+      console.log(` \x1b[32m${message}\x1b[0m `);
+     })
      .catch(error => console.error('Erreur :', error));
 
     exec(command, (error, stdout, stderr) => {

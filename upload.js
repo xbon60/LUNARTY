@@ -25,7 +25,7 @@ async function uploadFile(filePath, apiKey) {
       }
     });
 
-    console.log('Fichier téléchargé avec succès :', response.data);
+    //console.log('Fichier téléchargé avec succès :', response.data);
     return response.data;
   } catch (error) {
     console.error('Erreur lors du téléchargement du fichier :', error);
