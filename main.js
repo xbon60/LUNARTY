@@ -19,6 +19,7 @@ ipcMain.on('configrequest', (event) => {
 let boundsvalue = {}
 let actualyview = 'mainwiew';
 let mainWindow
+let mainwiew
 
 // Création de la fenêtre
 const createWindow = () => {
@@ -32,16 +33,16 @@ const createWindow = () => {
     }
   });
 
-  bannerwiew = new WebContentsView({
-    webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
-        contextIsolation: true
-    }
-  });
+  //bannerwiew = new WebContentsView({
+    //webPreferences: {
+      //  preload: path.join(__dirname, 'preload.js'),
+      //  nodeIntegration: true,
+      //  contextIsolation: true
+    //}
+  //});
 
-    mainWindow.contentView.addChildView(bannerwiew);
-    bannerwiew.webContents.loadFile('banner.html');
+    //mainWindow.contentView.addChildView(bannerwiew);
+    //bannerwiew.webContents.loadFile('banner.html');
     
 
   mainwiew = new WebContentsView({
@@ -54,17 +55,6 @@ const createWindow = () => {
 
     mainWindow.contentView.addChildView(mainwiew);
     mainwiew.webContents.loadFile('index.html');
-
-  settingswiew = new WebContentsView({
-    webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
-        contextIsolation: true
-    }
-    });
-  
-    mainWindow.contentView.addChildView(settingswiew);
-    settingswiew.webContents.loadFile('settings.html');
 
    // Initialisation des vues avec les dimensions actuelles de la fenêtre
    updateViewBounds();
@@ -80,13 +70,25 @@ const createWindow = () => {
      boundsvalue = bounds;
      const width = bounds.width;
      const height = bounds.height;
-     bannerwiew.setBounds({ x: 0, y: 0, width: width, height: 50});
-     if (actualyview === 'mainwiew') {
-        mainwiew.setBounds({ x: 0, y: 50, width: width, height: height - 50 });
-    }else {
-        settingswiew.setBounds({ x: 0, y: 50, width: width, height: height - 50 });
-    }}
-// Activer DevTools si le raccourci Ctrl+Shift+I est utilisé
+     //bannerwiew.setBounds({ x: 0, y: 0, width: width, height: 50});
+     mainwiew.setBounds({ x: 0, y: 0, width: width, height: height });
+    }
+  
+    // Gestion des événements IPC pour changer de vue
+ipcMain.on('show-view', (event, view) => {
+    console.log('show-view', view);
+    const bounds = boundsvalue;
+    const width = bounds.width;
+    const height = bounds.height;
+
+    if (view === 'mainwiew') {
+      mainwiew.webContents.loadFile('index.html');
+    } else if (view === 'settingswiew') {
+      mainwiew.webContents.loadFile('settings.html');
+    }
+});    
+    
+    // Activer DevTools si le raccourci Ctrl+Shift+I est utilisé
   globalShortcut.register('Control+Shift+I', () => {
     if (mainwiew && mainwiew.webContents) {
       mainwiew.webContents.toggleDevTools();
@@ -99,23 +101,7 @@ const createWindow = () => {
  }
 
 
- // Gestion des événements IPC pour changer de vue
-ipcMain.on('show-view', (event, view) => {
-    console.log('show-view', view);
-    const bounds = boundsvalue;
-    const width = bounds.width;
-    const height = bounds.height;
 
-    if (view === 'mainwiew') {
-      mainwiew.setBounds({ x: 0, y: 50, width: width, height: height - 50 });
-      settingswiew.setBounds({ x: 0, y: 50, width: 0, height: 0 });;
-      actualyview = 'mainwiew';
-    } else if (view === 'settingswiew') {
-      mainwiew.setBounds({ x: 0, y: 50, width: 0, height: 0 });
-      settingswiew.setBounds({ x: 0, y: 50, width: width, height: height - 50 });
-      actualyview = 'settingswiew';
-    }
-});
 app.whenReady().then(() => {
   createWindow()
 

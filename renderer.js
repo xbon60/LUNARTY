@@ -4,6 +4,20 @@ let networkslist = []; // Déclaration d'une variable globale pour stocker les r
 window.addEventListener('DOMContentLoaded', () => {
     const buttonwifi = document.getElementById('validatebuttonwifi');
     const container = document.getElementById('buttonContainer');
+    const view1Button = document.getElementById('showmainmenu');
+    const view2Button = document.getElementById('showsettingsmenu');
+
+    view1Button.addEventListener('click', () => {
+        window.appapi.showview('mainwiew');    
+
+    });
+
+    view2Button.addEventListener('click', () => {
+        window.appapi.showview('settingswiew');   
+    
+    });
+
+
     // Ajoute un événement de clic pour déclencher une action backend
 
     buttonwifi.addEventListener('click', () => {

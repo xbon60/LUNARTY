@@ -11,14 +11,20 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <title>LUNARTY</title>
+    <title>Projet LUNARTY</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
-    <p>Scan Reseau Wifi</p>
-    <button id="validatebuttonwifi">Validé</button>
-    <div id="buttonContainer"></div>
-    
+    <div id="bandeau-superieur">
+      <button id="showmainmenu">Menu Principal</button>
+      <button id="showsettingsmenu">Configuration</button>
+    </div>
+
+    <div class="content">
+      <p>Projet LUNARTY</p>
+      <button id="validatebuttonwifi">Validé</button>
+      <div id="buttonContainer"></div>
+    </div>
   </body>
   <script src="./renderer.js"></script>
 </html>

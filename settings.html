@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Configuration Dashboard</title>
+  <title>Configuration</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <h1>Configuration Dashboard</h1>
-  <label for="networkcard">Carte Réseau:</label>
-  <input id="networkcardvalue" type="text"><br>
+  <div id="bandeau-superieur">
+    <button id="showmainmenu">Menu Principal</button>
+    <button id="showsettingsmenu">Configuration</button>
+  </div>
+  <div class="content">
+  <p>Configuration</p>
+  <label class='configlabel' for="networkcard">Carte Réseau:</label>
+  <input class='InputConfigEntry' id="networkcardvalue" type="text"><br>
   <button id="saveConfig">Save Configuration</button>
+  </div>
 </body>
 <script src="renderersettings.js" defer></script>
 </html>
