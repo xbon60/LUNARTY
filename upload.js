@@ -18,7 +18,7 @@ async function uploadFile(filePath, apiKey) {
     formData.append('file', fileStream);
 
     // Envoyez le fichier au serveur distant avec la clé API
-    const response = await axios.post('https://uploadlunarty.cloudnest.ovh/upload', formData, {
+    const response = await axios.post('http://localhost:3000/api/upload', formData, {
       headers: {
         'x-api-key': apiKey,  // Ajoutez la clé API dans les en-têtes
         ...formData.getHeaders() // Ajoutez les headers nécessaires pour le formulaire

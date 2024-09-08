@@ -30,6 +30,7 @@ saveConfig.addEventListener('click', () => {
   window.appapi.logreport('Clic sur le bouton de sauvegarde !');
   const newConfig = {
     networkcard: document.getElementById('networkcardvalue').value,
+    apiKey: document.getElementById('apikeyvalue').value
   };
   window.materialapi.setconfig(newConfig);
 });
