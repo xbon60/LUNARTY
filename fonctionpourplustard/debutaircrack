@@ -1,0 +1,12 @@
+exec(command, (error, stdout, stderr) => {
+        if (error) {
+            event.sender.send('run-aircrack-command-response', `Erreur: ${error.message}`);
+            console.log(`Erreur: ${error.message}`);
+        } else if (stderr) {
+            event.sender.send('run-aircrack-command-response', `Erreur: ${stderr}`);
+            console.log(`Erreur: ${stderr}`);
+        } else {
+            event.sender.send('run-aircrack-command-response', stdout);
+            console.log(`stdout: ${stdout}`);
+        }
+    });

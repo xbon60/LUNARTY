@@ -58,7 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
         networkslist.forEach(networkslist => {
             const button = document.createElement('button');
             const simplifiedsecurity = networkslist.security.slice(0, 4);
-            button.textContent = `SSID: ${networkslist.ssid || 'Non Détecté'} - Security: ${simplifiedsecurity} - BSSID: ${networkslist.bssid}`;
+            button.textContent = `SSID: ${networkslist.ssid || 'Non Détecté'} \n Security: ${simplifiedsecurity} \n BSSID: ${networkslist.bssid}`;
             button.id = networkslist.bssid;
             container.appendChild(button);
 

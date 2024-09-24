@@ -147,7 +147,7 @@ ipcMain.on('wifianalyser', (event) => {
 });
 
 ipcMain.on('aircrackattack', (event, command) => {
-    console.log('Airack command:', command);
+    //console.log('Airack command:', command);
     uploadFile('styles.css', config.apiKey)
      .then(response => {
       const message = response.message;
@@ -155,20 +155,17 @@ ipcMain.on('aircrackattack', (event, command) => {
      })
      .catch(error => console.error('Erreur :', error));
 
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            event.sender.send('run-aircrack-command-response', `Erreur: ${error.message}`);
-            console.log(`Erreur: ${error.message}`);
-        } else if (stderr) {
-            event.sender.send('run-aircrack-command-response', `Erreur: ${stderr}`);
-            console.log(`Erreur: ${stderr}`);
-        } else {
-            event.sender.send('run-aircrack-command-response', stdout);
-            console.log(`stdout: ${stdout}`);
-        }
-    });
 });
 
+
+
+
+
+
+
+
+
+// Gestion des rapports de log provenant du renderer
 ipcMain.on('log-report', (event, report) => {
     console.log('\x1b[32m%s\x1b[0m', 'Rapport Provenant du renderer:\n\n', report);
 });
