@@ -5,6 +5,8 @@ const { exec } = require('child_process');
 const wifi = require('node-wifi');
 const fs = require('fs');
 const uploadFile = require('./upload'); // Importez la fonction uploadFile
+const { Interface } = require('node:readline');
+const { log } = require('node:console');
 
 
 
@@ -144,6 +146,20 @@ ipcMain.on('wifianalyser', (event) => {
             event.reply('wifianalyser', networks);
         }
     });
+});
+
+ipcMain.on('statusMonitor', (event) => {
+    try {
+        const { execSync } = require('child_process');
+        const result = execSync(`iwconfig ${config.Interface}`).toString();
+        const isMonitorMode = result.includes('Mode:Monitor');
+        statusMonitor = isMonitorMode;
+        event.reply('statusMonitor', statusMonitor);
+        log(`État du moniteur: ${statusMonitor ? 'Activé' : 'Désactivé'}`);
+    } catch (error) {
+        log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
+        event.reply('statusMonitor', false);
+    }
 });
 
 ipcMain.on('aircrackattack', (event, command) => {

@@ -4,14 +4,18 @@ contextBridge.exposeInMainWorld('materialapi', {
   wifianalyser: () => ipcRenderer.send('wifianalyser'),
   aircrackattack: (command) => ipcRenderer.send('aircrackattack', command),
   configrequest: () => ipcRenderer.send('configrequest'),
-  setconfig: (command) => ipcRenderer.send('setconfig', command)
+  setconfig: (command) => ipcRenderer.send('setconfig', command),
+  enableMonitor: () => ipcRenderer.send('enableMonitor'),
+  disableMonitor: () => ipcRenderer.send('disableMonitor'),
+  statusMonitor: () => ipcRenderer.send('statusMonitor'),
   // nous pouvons aussi exposer des variables en plus des fonctions
 })
 
 contextBridge.exposeInMainWorld('refreshapi', {
     ResultTextBox: (callback) => ipcRenderer.on('update-results', callback),
     wifianalyser: (callback) => ipcRenderer.on('wifianalyser', callback),
-    configrequest: (callback) => ipcRenderer.on('configrequest', callback)
+    configrequest: (callback) => ipcRenderer.on('configrequest', callback),
+    statusMonitor: (callback) => ipcRenderer.on('statusMonitor', callback)
   })
 
 contextBridge.exposeInMainWorld('appapi', {

@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('buttonContainer');
     const view1Button = document.getElementById('showmainmenu');
     const view2Button = document.getElementById('showsettingsmenu');
+    const toggleMonitor = document.getElementById('togglemonitor');
 
     view1Button.addEventListener('click', () => {
         window.appapi.showview('mainwiew');    
@@ -17,9 +18,19 @@ window.addEventListener('DOMContentLoaded', () => {
     
     });
 
+    toggleMonitor.addEventListener('click', () => {
+        window.appapi.logreport('Clic sur le bouton monitor');
+        window.materialapi.statusMonitor();
+    });
+
+    // Déplacer l'écouteur statusMonitor en dehors du click event
+    window.refreshapi.statusMonitor((event, status) => {
+        window.appapi.logreport("Status monitor: " + status);
+        // Mettre à jour l'interface utilisateur en fonction du statut
+        toggleMonitor.textContent = status ? "Désactiver le moniteur" : "Activer le moniteur";
+    });
 
     // Ajoute un événement de clic pour déclencher une action backend
-
     buttonwifi.addEventListener('click', () => {
         window.appapi.logreport('Clic sur le bouton wifi');
       // Appelle la méthode exposée par preload.js
