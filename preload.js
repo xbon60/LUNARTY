@@ -1,4 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron')
+const fs = require('fs');
+const path = require('node:path');
+
+// Charger la configuration
+const configPath = path.join(__dirname, 'config.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 contextBridge.exposeInMainWorld('materialapi', {
   wifianalyser: () => ipcRenderer.send('wifianalyser'),
@@ -8,6 +14,7 @@ contextBridge.exposeInMainWorld('materialapi', {
   enableMonitor: () => ipcRenderer.send('enableMonitor'),
   disableMonitor: () => ipcRenderer.send('disableMonitor'),
   statusMonitor: () => ipcRenderer.send('statusMonitor'),
+  config: config
   // nous pouvons aussi exposer des variables en plus des fonctions
 })
 

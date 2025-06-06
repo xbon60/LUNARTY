@@ -172,14 +172,6 @@ ipcMain.on('statusMonitor', (event) => {
 ipcMain.on('enableMonitor', (event) => {
   try {
       const { execSync } = require('child_process');
-      
-      // Vérifier si l'interface existe
-      try {
-          execSync(`iwconfig ${config.networkcard}`);
-      } catch (error) {
-          event.reply('statusMonitor', false);
-          throw new Error(`L'interface ${config.networkcard} n'existe pas`);
-      }
 
       // Exécuter airmon-ng avec pkexec
       execSync(`pkexec airmon-ng start ${config.networkcard}`);
@@ -210,7 +202,7 @@ ipcMain.on('enableMonitor', (event) => {
               log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
               event.reply('statusMonitor', false);
           }
-      }, 2000);
+      }, 1000);
   } catch (error) {
       log(`Erreur lors de l'activation du mode moniteur: ${error.message}`);
       event.reply('statusMonitor', false);
@@ -220,14 +212,6 @@ ipcMain.on('enableMonitor', (event) => {
 ipcMain.on('disableMonitor', (event) => {
   try {
       const { execSync } = require('child_process');
-      
-      // Vérifier si l'interface existe
-      try {
-          execSync(`iwconfig ${config.networkcard}`);
-      } catch (error) {
-          event.reply('statusMonitor', false);
-          throw new Error(`L'interface ${config.networkcard} n'existe pas`);
-      }
 
       // Exécuter airmon-ng avec pkexec
       execSync(`pkexec airmon-ng stop ${config.networkcard}`);
@@ -258,7 +242,7 @@ ipcMain.on('disableMonitor', (event) => {
               log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
               event.reply('statusMonitor', true);
           }
-      }, 2000);
+      }, 1000);
   } catch (error) {
       log(`Erreur lors de la désactivation du mode moniteur: ${error.message}`);
       event.reply('statusMonitor', true);
@@ -266,14 +250,17 @@ ipcMain.on('disableMonitor', (event) => {
 });
 
 ipcMain.on('aircrackattack', (event, command) => {
+    const { exec } = require('child_process');
+    log(command)
+    exec(command)
     //console.log('Airack command:', command);
-    uploadFile('styles.css', config.apiKey)
+    /*uploadFile('styles.css', config.apiKey)
      .then(response => {
       const message = response.message;
       console.log(` \x1b[32m${message}\x1b[0m `);
      })
      .catch(error => console.error('Erreur :', error));
-
+    */
 });
 
 

