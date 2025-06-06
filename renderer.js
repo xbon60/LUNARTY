@@ -85,12 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => {
                 window.appapi.logreport(`Clic sur le bouton wifi avec BSSID: ${networkslist.bssid}`);
                 // D'abord changer le canal
-                const channelCommand = `pkexec iwconfig ${config.networkcard} channel ${networkslist.channel}`;
-                window.materialapi.aircrackattack(channelCommand);
-                //erreur ce lance en paralle
-                // Puis lancer l'attaque
-                const attackCommand = `pkexec aireplay-ng --deauth 100 -a ${networkslist.bssid} ${config.networkcard}`;
-                window.materialapi.aircrackattack(attackCommand);
+                window.materialapi.deauthattack(networkslist.channel,networkslist.bssid,100);
             });
         });
       };

