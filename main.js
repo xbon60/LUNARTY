@@ -121,7 +121,13 @@ ipcMain.on('show-view', (event, view) => {
 
 app.whenReady().then(() => {
   createWindow()
-
+  // Vérifier si aircrack-ng est installé
+  try {
+    const { execSync } = require('child_process');
+    execSync('which aircrack-ng');
+  } catch (error) {
+    throw new Error('aircrack-ng n\'est pas installé. Installez-le avec: sudo apt-get install aircrack-ng');
+  }
 })
 ipcMain.on('setconfig', (event, newConfig) => {
     console.log('Nouvelle configuration en application... :', newConfig);
@@ -151,7 +157,7 @@ ipcMain.on('wifianalyser', (event) => {
 ipcMain.on('statusMonitor', (event) => {
     try {
         const { execSync } = require('child_process');
-        const result = execSync(`iwconfig ${config.Interface}`).toString();
+        const result = execSync(`iwconfig ${config.networkcard}`).toString();
         const isMonitorMode = result.includes('Mode:Monitor');
         statusMonitor = isMonitorMode;
         event.reply('statusMonitor', statusMonitor);
@@ -160,6 +166,35 @@ ipcMain.on('statusMonitor', (event) => {
         log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
         event.reply('statusMonitor', false);
     }
+});
+
+ipcMain.on('enableMonitor', (event) => {
+  try {
+      const { execSync } = require('child_process');
+      // Vérifier si l'interface existe
+      try {
+          execSync(`iwconfig ${config.networkcard}`);
+      } catch (error) {
+          event.reply('statusMonitor', false);
+          throw new Error(`L'interface ${config.networkcard} n'existe pas`);
+      }
+      // Exécuter airmon-ng avec pkexec
+      execSync(`pkexec airmon-ng start ${config.networkcard}`);
+      
+      // Vérifier si le mode moniteur a été activé
+      const result = execSync(`iwconfig ${config.networkcard}`).toString();
+      const isMonitorMode = result.includes('Mode:Monitor');
+      
+      if (!isMonitorMode) {
+          throw new Error('Le mode moniteur n\'a pas pu être activé');
+      }
+
+      event.reply('statusMonitor', true);
+      log('Mode moniteur activé avec succès');
+  } catch (error) {
+      log(`Erreur lors de l'activation du mode moniteur: ${error.message}`);
+      event.reply('statusMonitor', false);
+  }
 });
 
 ipcMain.on('aircrackattack', (event, command) => {

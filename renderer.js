@@ -21,13 +21,19 @@ window.addEventListener('DOMContentLoaded', () => {
     toggleMonitor.addEventListener('click', () => {
         window.appapi.logreport('Clic sur le bouton monitor');
         window.materialapi.statusMonitor();
+        if (toggleMonitor.textContent == "Activer le moniteur") {
+            window.materialapi.enableMonitor();
+            window.materialapi.statusMonitor();
+        }
     });
 
-    // Déplacer l'écouteur statusMonitor en dehors du click event
+    
     window.refreshapi.statusMonitor((event, status) => {
         window.appapi.logreport("Status monitor: " + status);
         // Mettre à jour l'interface utilisateur en fonction du statut
         toggleMonitor.textContent = status ? "Désactiver le moniteur" : "Activer le moniteur";
+        toggleMonitor.style.backgroundColor = status ? 'red' : 'green';
+        toggleMonitor.style.color = status ? 'white' : 'black';
     });
 
     // Ajoute un événement de clic pour déclencher une action backend
