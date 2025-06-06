@@ -23,8 +23,10 @@ window.addEventListener('DOMContentLoaded', () => {
         window.materialapi.statusMonitor();
         if (toggleMonitor.textContent == "Activer le moniteur") {
             window.materialapi.enableMonitor();
-            window.materialapi.statusMonitor();
+        } else if (toggleMonitor.textContent == "Désactiver le moniteur") {
+            window.materialapi.disableMonitor();
         }
+        
     });
 
     

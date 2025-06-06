@@ -133,9 +133,10 @@ ipcMain.on('setconfig', (event, newConfig) => {
     console.log('Nouvelle configuration en application... :', newConfig);
     fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
     console.log('Configuration enregistrée:');
-    console.log('application de la jnouvelle configuration...');
-    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-    console.log('Configuration appliqué');
+    console.log('application de la nouvelle configuration...');
+    config = newConfig; // Utiliser directement newConfig au lieu de relire le fichier
+    console.log('Configuration appliquée:', config);
+    event.reply('configrequest', config); // Envoyer la nouvelle configuration au renderer
 });
 
 
@@ -171,6 +172,7 @@ ipcMain.on('statusMonitor', (event) => {
 ipcMain.on('enableMonitor', (event) => {
   try {
       const { execSync } = require('child_process');
+      
       // Vérifier si l'interface existe
       try {
           execSync(`iwconfig ${config.networkcard}`);
@@ -178,22 +180,88 @@ ipcMain.on('enableMonitor', (event) => {
           event.reply('statusMonitor', false);
           throw new Error(`L'interface ${config.networkcard} n'existe pas`);
       }
+
       // Exécuter airmon-ng avec pkexec
       execSync(`pkexec airmon-ng start ${config.networkcard}`);
       
-      // Vérifier si le mode moniteur a été activé
-      const result = execSync(`iwconfig ${config.networkcard}`).toString();
-      const isMonitorMode = result.includes('Mode:Monitor');
+      // Mettre à jour la configuration avec le nouveau nom d'interface
+      const newConfig = {
+          ...config,
+          networkcard: `${config.networkcard}mon`
+      };
+      fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+      config = newConfig;
       
-      if (!isMonitorMode) {
-          throw new Error('Le mode moniteur n\'a pas pu être activé');
-      }
+      // Attendre un peu pour que l'interface se stabilise
+      setTimeout(() => {
+          try {
+              // Vérifier si le mode moniteur a été activé
+              const result = execSync(`iwconfig ${config.networkcard}`).toString();
+              const isMonitorMode = result.includes('Mode:Monitor');
+              
+              if (!isMonitorMode) {
+                  throw new Error('Le mode moniteur n\'a pas pu être activé');
+              }
 
-      event.reply('statusMonitor', true);
-      log('Mode moniteur activé avec succès');
+              event.reply('statusMonitor', true);
+              event.reply('configrequest', config); // Envoyer la nouvelle configuration au renderer
+              log('Mode moniteur activé avec succès');
+          } catch (error) {
+              log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
+              event.reply('statusMonitor', false);
+          }
+      }, 2000);
   } catch (error) {
       log(`Erreur lors de l'activation du mode moniteur: ${error.message}`);
       event.reply('statusMonitor', false);
+  }
+});
+
+ipcMain.on('disableMonitor', (event) => {
+  try {
+      const { execSync } = require('child_process');
+      
+      // Vérifier si l'interface existe
+      try {
+          execSync(`iwconfig ${config.networkcard}`);
+      } catch (error) {
+          event.reply('statusMonitor', false);
+          throw new Error(`L'interface ${config.networkcard} n'existe pas`);
+      }
+
+      // Exécuter airmon-ng avec pkexec
+      execSync(`pkexec airmon-ng stop ${config.networkcard}`);
+      
+      // Mettre à jour la configuration avec le nom d'interface original
+      const newConfig = {
+          ...config,
+          networkcard: config.networkcard.replace('mon', '')
+      };
+      fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+      config = newConfig;
+      
+      // Attendre un peu pour que l'interface se stabilise
+      setTimeout(() => {
+          try {
+              // Vérifier si le mode moniteur a été désactivé
+              const result = execSync(`iwconfig ${config.networkcard}`).toString();
+              const isMonitorMode = result.includes('Mode:Monitor');
+              
+              if (isMonitorMode) {
+                  throw new Error('Le mode moniteur n\'a pas pu être désactivé');
+              }
+
+              event.reply('statusMonitor', false);
+              event.reply('configrequest', config); // Envoyer la nouvelle configuration au renderer
+              log('Mode moniteur désactivé avec succès');
+          } catch (error) {
+              log(`Erreur lors de la vérification du mode moniteur: ${error.message}`);
+              event.reply('statusMonitor', true);
+          }
+      }, 2000);
+  } catch (error) {
+      log(`Erreur lors de la désactivation du mode moniteur: ${error.message}`);
+      event.reply('statusMonitor', true);
   }
 });
 
