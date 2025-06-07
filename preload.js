@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld('refreshapi', {
     ResultTextBox: (callback) => ipcRenderer.on('update-results', callback),
     wifianalyser: (callback) => ipcRenderer.on('wifianalyser', callback),
     configrequest: (callback) => ipcRenderer.on('configrequest', callback),
-    statusMonitor: (callback) => ipcRenderer.on('statusMonitor', callback)
+    statusMonitor: (callback) => ipcRenderer.on('statusMonitor', callback),
+    deauthCounterUpdate: (callback) => ipcRenderer.on('deauth-counter-update', callback),
   })
 
 contextBridge.exposeInMainWorld('appapi', {

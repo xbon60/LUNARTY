@@ -1,4 +1,5 @@
 let networkslist = []; // Déclaration d'une variable globale pour stocker les réseaux Wi-Fi
+let deauthCounter = 0; // Compteur de requêtes de déauth
 
 const config = window.materialapi.config
 
@@ -9,6 +10,26 @@ window.addEventListener('DOMContentLoaded', () => {
     const view1Button = document.getElementById('showmainmenu');
     const view2Button = document.getElementById('showsettingsmenu');
     const toggleMonitor = document.getElementById('togglemonitor');
+    
+    // Créer l'élément pour afficher le compteur
+    const deauthCounterDisplay = document.createElement('div');
+    deauthCounterDisplay.id = 'deauthCounter';
+    deauthCounterDisplay.style.position = 'fixed';
+    deauthCounterDisplay.style.top = '10px';
+    deauthCounterDisplay.style.right = '10px';
+    deauthCounterDisplay.style.padding = '10px';
+    deauthCounterDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    deauthCounterDisplay.style.color = 'white';
+    deauthCounterDisplay.style.borderRadius = '5px';
+    deauthCounterDisplay.textContent = 'Requêtes DeAuth: 0';
+    document.body.appendChild(deauthCounterDisplay);
+
+    // Écouter les mises à jour du compteur
+    window.refreshapi.deauthCounterUpdate((event, count) => {
+        deauthCounter = count;
+        deauthCounterDisplay.textContent = `Requêtes DeAuth: ${count}`;
+    });
+
 
     view1Button.addEventListener('click', () => {
         window.appapi.showview('mainwiew');    

