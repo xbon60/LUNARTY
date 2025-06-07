@@ -317,6 +317,26 @@ ipcMain.on('reset-deauth-counter', (event) => {
   event.reply('deauth-counter-update', deauthCounter);
 });
 
+
+ipcMain.on('start-handshake-capture', (event, bssid, channel) => {
+  const { exec } = require('child_process');
+  const path = require('path');
+
+  const outputFile = path.join(__dirname, 'capture');
+  const command = `pkexec airodump-ng --bssid ${bssid} -c ${channel} -w ${outputFile} ${config.networkcard}`;
+
+  try {
+    exec(command);
+    log(`🔍 Capture de handshake lancée pour le réseau ${bssid} sur le canal ${channel}`);
+    log(`📁 Fichier de capture: ${outputFile}-01.cap`);
+    log(`💻 Commande exécutée: ${command}`);
+  } catch (err) {
+    log(`Erreur lors du lancement de la capture: ${err.message}`);
+    event.reply('handshake-capture-error', err.message);
+  }
+});
+
+
 ipcMain.on('aircrackattack', (event, command) => {
     const { exec } = require('child_process');
     log(command)

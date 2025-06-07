@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('materialapi', {
   disableMonitor: () => ipcRenderer.send('disableMonitor'),
   statusMonitor: () => ipcRenderer.send('statusMonitor'),
   deauthattack: (channel,bssid,deauth) => ipcRenderer.send('deauthattack', channel,bssid,deauth),
+  startHandshakeCapture: (bssid, channel) => ipcRenderer.send('start-handshake-capture', bssid, channel),
   config: config
   // nous pouvons aussi exposer des variables en plus des fonctions
 })

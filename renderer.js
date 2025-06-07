@@ -96,19 +96,35 @@ window.addEventListener('DOMContentLoaded', () => {
         // Crée un bouton pour chaque réseau wifi
         container.innerHTML = ''; // Efface les boutons précédents
         networkslist.forEach(networkslist => {
-            const button = document.createElement('button');
+            const networkContainer = document.createElement('div');
+            networkContainer.style.marginBottom = '10px';
+            
+            const infoButton = document.createElement('button');
             const simplifiedsecurity = networkslist.security.slice(0, 4);
-            button.textContent = `SSID: ${networkslist.ssid || 'Non Détecté'} \n Security: ${simplifiedsecurity} \n BSSID: ${networkslist.bssid}`;
-            button.id = networkslist.bssid;
-            container.appendChild(button);
+            infoButton.textContent = `SSID: ${networkslist.ssid || 'Non Détecté'} \n Security: ${simplifiedsecurity} \n BSSID: ${networkslist.bssid}`;
+            infoButton.id = networkslist.bssid;
+            networkContainer.appendChild(infoButton);
 
-            // Ajoute un événement de clic pour chaque bouton wifi
-            button.addEventListener('click', () => {
-                window.appapi.logreport(`Clic sur le bouton wifi avec BSSID: ${networkslist.bssid}`);
-                // D'abord changer le canal
-                window.materialapi.deauthattack(networkslist.channel,networkslist.bssid,100);
+            const deauthButton = document.createElement('button');
+            deauthButton.textContent = 'Lancer DeAuth';
+            deauthButton.style.backgroundColor = '#ff4444';
+            deauthButton.addEventListener('click', () => {
+                window.appapi.logreport(`Lancement DeAuth pour le réseau: ${networkslist.bssid}`);
+                window.materialapi.deauthattack(networkslist.channel, networkslist.bssid, 500);
             });
+            networkContainer.appendChild(deauthButton);
+
+            const handshakeButton = document.createElement('button');
+            handshakeButton.textContent = 'Capturer Handshake';
+            handshakeButton.style.backgroundColor = '#44ff44';
+            handshakeButton.addEventListener('click', () => {
+                window.appapi.logreport(`Lancement capture handshake pour le réseau: ${networkslist.bssid}`);
+                window.materialapi.startHandshakeCapture(networkslist.bssid, networkslist.channel);
+            });
+            networkContainer.appendChild(handshakeButton);
+
+            container.appendChild(networkContainer);
         });
-      };
+    };
   });
   
