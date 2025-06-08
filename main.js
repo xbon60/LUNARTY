@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, BaseWindow, WebContentsView, globalShortcut
 const path = require('node:path')
 const { exec } = require('child_process');
 const wifi = require('node-wifi');
+const netkitty = require('netkitty/network');
 const fs = require('fs');
 const uploadFile = require('./upload'); // Importez la fonction uploadFile
 const { Interface } = require('node:readline');
@@ -37,20 +38,9 @@ const createWindow = () => {
     autoHideMenuBar: true,
     webPreferences: {
         nodeIntegration: true,
+        contextIsolation: true
     }
   });
-
-  //bannerwiew = new WebContentsView({
-    //webPreferences: {
-      //  preload: path.join(__dirname, 'preload.js'),
-      //  nodeIntegration: true,
-      //  contextIsolation: true
-    //}
-  //});
-
-    //mainWindow.contentView.addChildView(bannerwiew);
-    //bannerwiew.webContents.loadFile('banner.html');
-    
 
   mainwiew = new WebContentsView({
     webPreferences: {
@@ -77,7 +67,6 @@ const createWindow = () => {
      boundsvalue = bounds;
      const width = bounds.width;
      const height = bounds.height;
-     //bannerwiew.setBounds({ x: 0, y: 0, width: width, height: 50});
      mainwiew.setBounds({ x: 0, y: 0, width: width, height: height });
     }
   
@@ -319,20 +308,63 @@ ipcMain.on('reset-deauth-counter', (event) => {
 
 
 ipcMain.on('start-handshake-capture', (event, bssid, channel) => {
-  const { exec } = require('child_process');
-  const path = require('path');
+  // Configurer l'interface sur le bon canal
+  const setChannelCmd = `iwconfig ${config.networkcard} channel ${channel}`;
+  exec(setChannelCmd, (err) => {
+    if (err) {
+      log(`Erreur configuration du canal: ${err.message}`);
+      event.reply('handshake-capture-error', err.message);
+      return;
+    }
 
-  const outputFile = path.join(__dirname, 'capture');
-  const command = `pkexec airodump-ng --bssid ${bssid} -c ${channel} -w ${outputFile} ${config.networkcard}`;
+    log(`🔁 Interface ${config.networkcard} configurée sur le canal ${channel}`);
 
-  try {
-    exec(command);
-    log(`🔍 Capture de handshake lancée pour le réseau ${bssid} sur le canal ${channel}`);
-    log(`📁 Fichier de capture: ${outputFile}-01.cap`);
-    log(`💻 Commande exécutée: ${command}`);
-  } catch (err) {
-    log(`Erreur lors du lancement de la capture: ${err.message}`);
-    event.reply('handshake-capture-error', err.message);
+    // Lancer la capture avec netkitty
+    try {
+      const capture = new netkitty.Capture({
+        device: config.networkcard,
+        filter: 'ether proto 0x888e'  // Filtre pour les paquets EAPOL
+      });
+
+      capture.on('packet', (packetInfo) => {
+        try {
+          log('✅ Trame EAPOL détectée, arrêt automatique !');
+          capture.stop();
+          event.reply('handshake-capture-success', 'EAPOL détecté, capture arrêtée.');
+        } catch (error) {
+          log(`Erreur lors du traitement du paquet: ${error.message}`);
+        }
+      });
+
+      capture.on('error', (err) => {
+        log(`Erreur netkitty: ${err.message}`);
+        event.reply('handshake-capture-error', err.message);
+      });
+
+      // Démarrer la capture
+      capture.start().then(() => {
+        event.reply('handshake-capture-started', {
+          bssid,
+          channel,
+          interface: config.networkcard
+        });
+        log(`🔍 Capture live démarrée avec filtre EAPOL sur ${config.networkcard}`);
+      }).catch(error => {
+        log(`Erreur lors du démarrage de la capture: ${error.message}`);
+        event.reply('handshake-capture-error', error.message);
+      });
+
+    } catch (e) {
+      log(`Erreur lors de la capture live: ${e.message}`);
+      event.reply('handshake-capture-error', e.message);
+    }
+  });
+});
+
+ipcMain.on('stop-handshake-capture', () => {
+  if (capture) {
+    capture.stop();
+    log('🛑 Capture manuellement arrêtée');
   }
 });
 
